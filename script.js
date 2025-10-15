@@ -44,4 +44,63 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(element);
     });
 
+
+});
+// --- Typing Animation Logic ---
+// This should be added inside the DOMContentLoaded event listener,
+// replacing the previous typing animation function.
+document.addEventListener('DOMContentLoaded', () => {
+
+    // (Your existing code for mobile nav and scroll animations should be here)
+    
+    // New Cumulative Typing Animation Code
+    const typingTextElement = document.querySelector("#typing-text");
+    const phrasesToType = ["Builders", ", Dreamers", ", and Coders."];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+        if (!typingTextElement) return; // Stop if element doesn't exist
+
+        const typingSpeed = 120;
+        const deletingSpeed = 60;
+        const delayBetweenPhrases = 500;
+        const delayAtEnd = 2500; // Pause after the full sentence is typed
+
+        if (isDeleting) {
+            // Deleting the whole sentence
+            if (typingTextElement.textContent.length > 0) {
+                typingTextElement.textContent = typingTextElement.textContent.slice(0, -1);
+                setTimeout(type, deletingSpeed);
+            } else {
+                isDeleting = false;
+                phraseIndex = 0;
+                setTimeout(type, typingSpeed);
+            }
+        } else {
+            // Typing out the sentence part-by-part
+            if (phraseIndex < phrasesToType.length) {
+                const currentPhrase = phrasesToType[phraseIndex];
+                if (charIndex < currentPhrase.length) {
+                    typingTextElement.textContent += currentPhrase.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, typingSpeed);
+                } else {
+                    // Finished a phrase, move to the next
+                    phraseIndex++;
+                    charIndex = 0;
+                    setTimeout(type, delayBetweenPhrases);
+                }
+            } else {
+                // Finished the whole sentence, pause then start deleting
+                isDeleting = true;
+                setTimeout(type, delayAtEnd);
+            }
+        }
+    }
+    
+    // Start the animation
+    type();
+
 });
